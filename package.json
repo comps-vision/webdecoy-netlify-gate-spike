@@ -1,0 +1,12 @@
+{
+  "name": "webdecoy-netlify-gate-spike",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/inject.mjs && next build"
+  },
+  "dependencies": {
+    "next": "15.5.25",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
+  }
+}

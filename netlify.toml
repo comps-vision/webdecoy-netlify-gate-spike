@@ -1,0 +1,29 @@
+[build]
+command = "npm run build"
+publish = ".next"
+
+# A site edge function declared in netlify.toml (user toml declaration).
+[[edge_functions]]
+path = "/*"
+function = "site-toml"
+
+# Redirects and rewrites the customer relies on.
+[[redirects]]
+from = "/redirected"
+to = "/api/echo?via=redirect"
+status = 301
+
+[[redirects]]
+from = "/gate/redirected"
+to = "/api/echo?via=gate-redirect"
+status = 301
+
+[[redirects]]
+from = "/proxied/*"
+to = "/api/echo?via=rewrite"
+status = 200
+
+[[redirects]]
+from = "/gate/proxied/*"
+to = "/api/echo?via=gate-rewrite"
+status = 200
