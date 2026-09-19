@@ -101,6 +101,18 @@ export default async (request: Request, context: any) => {
     return stamp(Response.json({ n, ok, perf_ms: performance.now() - t0, date_ms: Date.now() - d0 }));
   }
 
+  // A sensor-shaped beacon: the response goes out first, the fetch runs in
+  // waitUntil. Posts to this site's own echo so no third party is involved.
+  if (url.pathname === '/diag/beacon') {
+    const t0 = performance.now();
+    const beacon = fetch(new URL('/api/echo?via=beacon', url), { signal: AbortSignal.timeout(2000) })
+      .then((r) => console.log(`[spike] beacon ${r.status} after ${(performance.now() - t0).toFixed(1)}ms`))
+      .catch((e) => console.log(`[spike] beacon failed ${e}`));
+    context.waitUntil?.(beacon);
+    const res = await context.next();
+    return stamp(res, { 'server-timing': `sync;dur=${(performance.now() - t0).toFixed(2)}` });
+  }
+
   // The gate stand-in: a Response ends the chain here.
   if (url.pathname.startsWith('/gate/')) {
     const t0 = performance.now();
