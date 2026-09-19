@@ -113,6 +113,19 @@ export default async (request: Request, context: any) => {
     return stamp(res, { 'server-timing': `sync;dur=${(performance.now() - t0).toFixed(2)}` });
   }
 
+  // Rewrite probes: return undefined on /rw-plain/*, forward a modified
+  // request through context.next() on /rw-next/*, as a gate adding a verdict
+  // header would.
+  if (url.pathname.startsWith('/rw-plain/')) return undefined;
+  if (url.pathname.startsWith('/rw-next/')) {
+    const h = new Headers(request.headers);
+    h.set('x-wd-clearance', 'unscoped');
+    return stamp(await context.next(new Request(request, { headers: h })));
+  }
+  if (url.pathname.startsWith('/rw-next-plain/')) {
+    return stamp(await context.next());
+  }
+
   // The gate stand-in: a Response ends the chain here.
   if (url.pathname.startsWith('/gate/')) {
     const t0 = performance.now();

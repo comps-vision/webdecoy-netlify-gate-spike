@@ -5,6 +5,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 export function middleware(request: NextRequest) {
   const url = request.nextUrl;
   console.log(`[spike] middleware ${request.method} ${url.pathname} chain=${request.headers.get('x-spike-chain') ?? ''}`);
+  if (url.pathname.startsWith('/rw-')) return NextResponse.next();
   if (url.pathname === '/mw-respond') {
     return NextResponse.json(
       { from: 'middleware', chain_seen: request.headers.get('x-spike-chain') ?? '' },

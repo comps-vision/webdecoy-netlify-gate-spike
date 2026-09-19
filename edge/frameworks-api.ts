@@ -2,6 +2,7 @@
 // (.netlify/v1/edge-functions), as Astro's Netlify adapter does for its
 // edge middleware. Inline-declared, like an adapter's.
 export default async (request: Request, context: { next: (r?: Request) => Promise<Response> }) => {
+  if (new URL(request.url).pathname.startsWith('/rw-')) return;
   const headers = new Headers(request.headers);
   headers.set('x-spike-chain', [headers.get('x-spike-chain'), 'frameworks-api'].filter(Boolean).join(','));
   const res = await context.next(new Request(request, { headers }));

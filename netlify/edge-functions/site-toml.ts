@@ -2,6 +2,7 @@
 export default async (request: Request, context: { next: (r?: Request) => Promise<Response> }) => {
   const url = new URL(request.url);
   if (url.pathname.startsWith('/_next/static/')) return;
+  if (new URL(request.url).pathname.startsWith('/rw-')) return;
   const headers = new Headers(request.headers);
   headers.set('x-spike-chain', [headers.get('x-spike-chain'), 'site-toml'].filter(Boolean).join(','));
   const res = await context.next(new Request(request, { headers }));

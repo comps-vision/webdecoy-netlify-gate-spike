@@ -27,3 +27,34 @@ status = 200
 from = "/gate/proxied/*"
 to = "/api/echo?via=gate-rewrite"
 status = 200
+
+# Rewrite probes (see edge/webdecoy-diag.ts): a static target and a Next route.
+[[redirects]]
+from = "/rw-plain/static/*"
+to = "/target"
+status = 200
+
+[[redirects]]
+from = "/rw-next/static/*"
+to = "/target"
+status = 200
+
+[[redirects]]
+from = "/rw-next-plain/static/*"
+to = "/target"
+status = 200
+
+[[redirects]]
+from = "/rw-plain/route/*"
+to = "/api/echo?via=rw"
+status = 200
+
+[[redirects]]
+from = "/rw-next/route/*"
+to = "/api/echo?via=rw"
+status = 200
+
+[[redirects]]
+from = "/rw-next-plain/route/*"
+to = "/api/echo?via=rw"
+status = 200
